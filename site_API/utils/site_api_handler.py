@@ -1,13 +1,13 @@
 from typing import Dict
 from telebot.types import Message
 
+
 import requests
 import json
 import re
 
 
-def _make_response(method: str, url: str, headers: Dict, params: Dict,
-                   timeout: int, success=200):
+def _make_response(method: str, url: str, headers: Dict, params: Dict, timeout: int, success=200):
     """
     Выполнение HTTP-запроса к Hotels API (rapidapi.com) (Поиск локаций (городов)) и проверяем статус 200.
     """
@@ -32,10 +32,10 @@ def _location_search(message: Message, url_dict: Dict, headers: Dict, lang: str,
     response = func("GET", url_dict['city_url'], headers=headers, params=querystring, timeout=10)
     data = json.loads(response.text)
 
-
     city_dict = {', '.join((city['name'], re.findall('(\\w+)[\n<]', city['caption'] + '\n')[-1])): city['geoId']
                  for city in data['suggestions'][0]['entities']}
     return city_dict
+
 
 # def _hotel_search():
 #
@@ -69,7 +69,6 @@ def _location_search(message: Message, url_dict: Dict, headers: Dict, lang: str,
 #     print(f'Найдено {len(d)} отелей')
 #     for i in range(len(d)):
 #         print(d[i]['name'])
-
 
 
 class SiteApiInterface():
