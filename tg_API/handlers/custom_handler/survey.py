@@ -1,7 +1,7 @@
 import logging
 
 from tg_API.keyboards.reply.contact import request_contact
-from bot_load import bot, dp
+from create_bot import bot, dp
 
 from tg_API.states.contact_information import FSMSurvey
 from aiogram.dispatcher import FSMContext
@@ -83,9 +83,9 @@ async def get_contact(message: types.Message, state: FSMContext) -> None:
                    f'Имя - {data["name"]}\nВозраст - {data["age"]}\nСтрана - {data["country"]} ' \
                    f'Город -{data["city"]}\nНомер телефона - {data["phone_number"]}'
 
-            await bot.send_message(message.from_user.id, text)
+            await bot.send_message(message.from_user.id, text, reply_markup=types.ReplyKeyboardRemove())
     else:
-        # await bot.send_message(message.from_user.id, 'Чтобы отправить контактную информацию нажми на кнопку')
+
         return await bot.send_message(message.from_user.id, 'Чтобы отправить контактную информацию нажми на кнопку')
 
     await state.finish()
@@ -100,4 +100,4 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(get_age, state=FSMSurvey.age)
     dp.register_message_handler(get_country, state=FSMSurvey.country)
     dp.register_message_handler(get_city, state=FSMSurvey.city)
-    dp.register_message_handler(get_contact, state=FSMSurvey.phone_number)
+    dp.register_message_handler(get_contact, content_types='contact', state=FSMSurvey.phone_number)
