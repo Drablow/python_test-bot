@@ -2,15 +2,15 @@
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
 
-# class UserInfoState(StatesGroup):
-#     name = State()
-#     age = State()
-#     country = State()
-#     city = State()
-#     phone_number = State()
+class FSMSurvey(StatesGroup):
+    name = State()
+    age = State()
+    country = State()
+    city = State()
+    phone_number = State()
 
 class FSMAdmin(StatesGroup):
-    name = State()
+    photo = State()
     age = State()
     country = State()
     city = State()
