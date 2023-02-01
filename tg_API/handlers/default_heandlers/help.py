@@ -1,10 +1,10 @@
-from telebot.types import Message
+from aiogram import types
+from create_bot import dp
 
 from tg_API.config_data.config import DEFAULT_COMMANDS
-from loader import bot
 
 
-@bot.message_handler(commands=['help'])
-def bot_help(message: Message):
+@dp.message_handler(commands=['help'])
+async def bot_help(message: types.Message):
     text = [f'/{command} - {desk}' for command, desk in DEFAULT_COMMANDS]
-    bot.reply_to(message, '\n'.join(text))
+    await message.reply('\n'.join(text))

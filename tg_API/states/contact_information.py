@@ -9,9 +9,4 @@ class FSMSurvey(StatesGroup):
     city = State()
     phone_number = State()
 
-class FSMAdmin(StatesGroup):
-    photo = State()
-    age = State()
-    country = State()
-    city = State()
-    phone_number = State()
+

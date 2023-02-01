@@ -1,1 +1,1 @@
-from . import requests
+from tg_API.handlers.basic_handlers import requests

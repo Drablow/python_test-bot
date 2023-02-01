@@ -3,6 +3,6 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemo
 
 
 def request_contact() -> ReplyKeyboardMarkup:
-    keyboard = ReplyKeyboardMarkup(True, True)
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.add(KeyboardButton('Отправить контакт', request_contact=True))
     return keyboard
