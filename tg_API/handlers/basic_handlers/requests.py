@@ -1,7 +1,5 @@
 from telebot.types import Message
-
 import re
-
 from loader import bot
 from telebot import types
 from site_API.core import site_api, url_dict, lang, headers

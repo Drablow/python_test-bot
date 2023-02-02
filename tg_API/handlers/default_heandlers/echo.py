@@ -3,9 +3,9 @@ from create_bot import dp
 
 
 # Эхо хендлер, куда летят текстовые сообщения без указанного состояния
-# @dp.message_handler()
 async def echo(message: types.Message):
-    await message.answer(message.text)
+    await message.reply('Такой команды нет! Воспользуйтесь командой /help.')
+    # await message.answer(message.text)
 
 
 def register_handlers_echo(dp: Dispatcher):

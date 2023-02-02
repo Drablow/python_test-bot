@@ -1,5 +1,5 @@
 # from telebot.types import ReplyKeyboardMarkup, KeyboardButton
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 
 def request_contact() -> ReplyKeyboardMarkup:

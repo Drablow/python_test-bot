@@ -1,9 +1,8 @@
-from aiogram import types
-from create_bot import bot, dp
+from aiogram import types, Dispatcher
+from create_bot import dp, bot
 
 
-@dp.message_handler(commands=['start'])
-async def bot_start(message: types.Message):
+async def start_bot(message: types.Message):
     await message.reply(f"Привет, {message.from_user.full_name}!")
     await bot.send_message(message.from_user.id, text='Я помогу вам в выборе отеля (выбери команду): '
                                                       '\n\n /lowprice - Узнать топ самых дешёвых отелей в городе'
@@ -13,3 +12,6 @@ async def bot_start(message: types.Message):
                                                       '\n\n /history - Узнать историю поиска отелей'
                                                       '\n\n /settings (по желанию) - Установить параметры поиска (язык, валюта)')
 
+
+def register_handlers_start(dp: Dispatcher):
+    dp.register_message_handler(start_bot, commands=['start'])
