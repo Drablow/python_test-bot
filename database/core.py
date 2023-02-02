@@ -1,8 +1,8 @@
 from database.utils.CRUD import CRUDInterface
-from database.common.models import db, History
+from database.common.models import db, User, History
 
 db.connect()
-db.create_tables([History])
+db.create_tables([User, History])
 
 crud = CRUDInterface()
 

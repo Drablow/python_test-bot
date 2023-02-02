@@ -1,22 +1,19 @@
 import logging
-
 from tg_API.states.set_lang_cur import FSMSetting
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram import types, Dispatcher
-
 from tg_API.keyboards.inline import choice_buttons
 
 
-# Начало настроек
-async def setting(message: types.Message):
-
+# Точка входа в настройки
+async def setting(message: types.Message) -> None:
     await FSMSetting.lang.set()
     await message.answer('Выберите язык:', reply_markup=choice_buttons.get_lang_keyboard())
 
 
 # Выход из состояний
-async def cancel_handler(message: types.Message, state: FSMContext):
+async def cancel_handler(message: types.Message, state: FSMContext) -> None:
     current_state = await state.get_state()
     if current_state is None:
         return
@@ -27,8 +24,7 @@ async def cancel_handler(message: types.Message, state: FSMContext):
 
 
 # Выбор языка
-async def lang(callback: types.CallbackQuery, state: FSMContext):
-
+async def lang(callback: types.CallbackQuery, state: FSMContext) -> None:
     async with state.proxy() as data:
         data['lang'] = callback.data
 
@@ -38,7 +34,7 @@ async def lang(callback: types.CallbackQuery, state: FSMContext):
 
 
 # Выбор валюты
-async def cur(callback: types.CallbackQuery, state: FSMContext):
+async def cur(callback: types.CallbackQuery, state: FSMContext) -> None:
     async with state.proxy() as data:
         data['cur'] = callback.data
     await callback.answer('Настройки валюты применены')

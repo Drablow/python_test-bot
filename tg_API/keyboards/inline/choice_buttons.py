@@ -1,7 +1,8 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
-def get_lang_keyboard():
+# Инлайн кнопки для выбора языка
+def get_lang_keyboard() -> InlineKeyboardMarkup:
     buttons = [
         InlineKeyboardButton(text='RU', callback_data='lang'),
         InlineKeyboardButton(text='ENG', callback_data='lang')
@@ -12,7 +13,8 @@ def get_lang_keyboard():
     return keyboard
 
 
-def get_cur_keyboard():
+# Инлайн кнопки для выбора валюты
+def get_cur_keyboard() -> InlineKeyboardMarkup:
     buttons = [
         InlineKeyboardButton(text='RUB', callback_data='cur'),
         InlineKeyboardButton(text='USD', callback_data='cur'),

@@ -2,7 +2,7 @@ from typing import Dict, List, TypeVar
 
 from peewee import ModelSelect
 
-from database.common.models import ModelBase
+from database.common.models import BaseModel
 from ..common.models import db
 
 T = TypeVar('T')
@@ -15,7 +15,7 @@ def _store_date(db: db, model: T, *data: List[Dict]) -> None:
 
 
 # read on base
-def _retrieve_all_data(db: db, model: T, *columns: ModelBase) -> ModelSelect:
+def _retrieve_all_data(db: db, model: T, *columns: BaseModel) -> ModelSelect:
     with db.atomic():
         response = model.select(*columns)
 

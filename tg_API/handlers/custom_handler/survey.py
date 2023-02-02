@@ -1,17 +1,23 @@
 import logging
-
+from aiogram.types import Message
 from tg_API.keyboards.reply.contact import request_contact
-from loader import bot
-
 from tg_API.states.contact_information import FSMSurvey
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram import types, Dispatcher
+import datetime
+from database.common.models import *
+from database.core import crud
+from database.common.models import db, History, User
+
+db_write = crud.create()
+db_read = crud.retrieve()
 
 
+# Вход в опросник
 async def survey(message: types.Message):
     await FSMSurvey.name.set()
-    await bot.send_message(message.from_user.id, f'Привет, {message.from_user.username} введи свое имя')
+    await message.answer(f'Привет, {message.from_user.username} введи свое имя')
 
 
 # Выход из состояний
@@ -25,65 +31,71 @@ async def cancel_handler(message: types.Message, state: FSMContext):
     await message.reply('Отмена.', reply_markup=types.ReplyKeyboardRemove())
 
 
-# @dp.message_handler(state=FSMSurvey.name)
+# Получаем имя и регистрируем следующее состояние
 async def get_name(message: types.Message, state: FSMContext):
     if message.text.isalpha():
         async with state.proxy() as data:
+            data['tg_id'] = message.from_user.id
             data['name'] = message.text
 
         await FSMSurvey.next()
-        await bot.send_message(message.from_user.id, 'Теперь введи свой возраст')
+        await message.answer('Теперь введи свой возраст')
 
     else:
-        await bot.send_message(message.from_user.id, 'Имя может содержать только буквы')
+        await message.answer('Имя может содержать только буквы')
 
 
+# Получаем возраст и регистрируем следующее состояние
 async def get_age(message: types.Message, state: FSMContext) -> None:
     if message.text.isdigit():
         async with state.proxy() as data:
             data['age'] = message.text
 
         await FSMSurvey.next()
-        await bot.send_message(message.from_user.id, 'Теперь введи страну проживания')
+        await message.answer('Теперь введи страну проживания')
 
     else:
-        await bot.send_message(message.from_user.id, 'Возраст может быть только числом')
+        await message.answer('Возраст может быть только числом')
 
 
+# Получаем Страну проживания и регистрируем следующее состояние
 async def get_country(message: types.Message, state: FSMContext) -> None:
     async with state.proxy() as data:
         data['country'] = message.text
 
     await FSMSurvey.next()
-    await bot.send_message(message.from_user.id, 'Теперь введи свой город')
+    await message.answer('Теперь введи свой город')
 
 
+# Получаем город проживания и регистрируем следующее состояние
 async def get_city(message: types.Message, state: FSMContext) -> None:
     async with state.proxy() as data:
         data['city'] = message.text
 
     await FSMSurvey.next()
-    await bot.send_message(message.from_user.id, 'Отправь свой номер нажав на кнопку',
-                           reply_markup=request_contact())
+    await message.answer('Отправь свой номер нажав на кнопку', reply_markup=request_contact())
 
 
-async def get_contact(message: types.Message, state: FSMContext) -> None:
+# Получаем телефон и завершаем опрос
+async def get_contact(message: types.Message, state: FSMContext) -> Message:
     if message.content_type == 'contact':
         async with state.proxy() as data:
             data['phone_number'] = message.contact.phone_number
 
-            text = '{info}\n{name}\n{age}\n{country}\n{city}\n{number}'.format(
-                info='Спасибо за предоставленную информацию ваши данные:',
-                name=f'Имя - {data.get("name")}',
-                age=f'Возраст - {data.get("age")}',
-                country=f'Страна - {data.get("country")}',
-                city=f'Город -{data.get("city")}',
-                number=f'Номер телефона - {data.get("phone_number")}')
+        text = '{info}\n{name}\n{age}\n{country}\n{city}\n{number}'.format(
+            info='<b>Спасибо за предоставленную информацию ваши данные:</b>',
+            name=f'<b>Имя:</b> <u>{data.get("name")}</u>',
+            age=f'<b>Возраст:</b> <u> {data.get("age")}</u>',
+            country=f'<b>Страна:</b> <u>{data.get("country")}</u>',
+            city=f'<b>Город:</b> <u>{data.get("city")}</u>',
+            number=f'<b>Номер телефона:</b> <u> {data.get("phone_number")}</u>')
 
-            await bot.send_message(message.from_user.id, text, reply_markup=types.ReplyKeyboardRemove())
+        db_write(db, User, dict(data))
+
+        await message.answer(text, reply_markup=types.ReplyKeyboardRemove())
     else:
 
-        return await bot.send_message(message.from_user.id, 'Чтобы отправить контактную информацию нажми на кнопку')
+        return await message.answer('Чтобы отправить контактную информацию нажми на кнопку')
 
     await state.finish()
 
