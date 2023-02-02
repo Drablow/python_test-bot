@@ -13,7 +13,7 @@
 
 import logging
 from aiogram.utils import executor
-from create_bot import dp, bot
+from loader import dp
 
 from tg_API.handlers.custom_handler import survey, setting
 from tg_API.handlers.default_heandlers import start, help, echo

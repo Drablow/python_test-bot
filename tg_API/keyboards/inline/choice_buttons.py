@@ -1,15 +1,24 @@
-# from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-#
-# from tg_API.keyboards.inline.callback_datas import lang_callback
-#
-# choice_lang = InlineKeyboardMarkup(
-#     inline_keyboard=[
-#         [
-#             InlineKeyboardButton(text='RU', callback_data=lang_callback.new(choice_lang='lang', lang='ru')),
-#             InlineKeyboardButton(text='ENG', callback_data='lang:ru')
-#         ]
-#
-#     ]
-# )
-#
-#
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+
+def get_lang_keyboard():
+    buttons = [
+        InlineKeyboardButton(text='RU', callback_data='lang'),
+        InlineKeyboardButton(text='ENG', callback_data='lang')
+    ]
+
+    keyboard = InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    return keyboard
+
+
+def get_cur_keyboard():
+    buttons = [
+        InlineKeyboardButton(text='RUB', callback_data='cur'),
+        InlineKeyboardButton(text='USD', callback_data='cur'),
+        InlineKeyboardButton(text='EUR', callback_data='cur')
+    ]
+
+    keyboard = InlineKeyboardMarkup(row_width=3)
+    keyboard.add(*buttons)
+    return keyboard

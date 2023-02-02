@@ -1,7 +1,7 @@
 import logging
 
 from tg_API.keyboards.reply.contact import request_contact
-from create_bot import bot
+from loader import bot
 
 from tg_API.states.contact_information import FSMSurvey
 from aiogram.dispatcher import FSMContext

@@ -1,1 +1,1 @@
-from tg_API.handlers.custom_handler import survey
+from tg_API.handlers.custom_handler import survey, setting

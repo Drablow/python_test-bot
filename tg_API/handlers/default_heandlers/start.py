@@ -1,5 +1,5 @@
 from aiogram import types, Dispatcher
-from create_bot import dp, bot
+from loader import dp, bot
 
 
 async def start_bot(message: types.Message):
@@ -10,7 +10,7 @@ async def start_bot(message: types.Message):
                                                       '\n\n /bestdeal - Узнать топ отелей, наиболее подходящих по цене '
                                                       'и расположению от центра (самые дешёвые и находятся ближе всего к центру)'
                                                       '\n\n /history - Узнать историю поиска отелей'
-                                                      '\n\n /settings (по желанию) - Установить параметры поиска (язык, валюта)')
+                                                      '\n\n /setting (по желанию) - Установить параметры поиска (язык, валюта)')
 
 
 def register_handlers_start(dp: Dispatcher):

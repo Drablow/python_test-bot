@@ -1,5 +1,5 @@
 from aiogram import types, Dispatcher
-from create_bot import dp
+from loader import dp
 
 
 # Эхо хендлер, куда летят текстовые сообщения без указанного состояния
