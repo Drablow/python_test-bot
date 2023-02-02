@@ -28,7 +28,7 @@ class History(BaseModel):
 
 
 class User(BaseModel):
-    tg_id = IntegerField(null=False)
+    tg_id = IntegerField(unique=True, null=False)
     name = CharField(null=True)
     age = IntegerField(null=True)
     country = CharField(null=True)

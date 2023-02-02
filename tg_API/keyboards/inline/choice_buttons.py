@@ -24,3 +24,14 @@ def get_cur_keyboard() -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardMarkup(row_width=3)
     keyboard.add(*buttons)
     return keyboard
+
+
+def get_yes_no_keyboard() -> InlineKeyboardMarkup:
+    buttons = [
+        InlineKeyboardButton(text='Да', callback_data='accept'),
+        InlineKeyboardButton(text='Нет', callback_data='cancel')
+    ]
+
+    keyboard = InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    return keyboard

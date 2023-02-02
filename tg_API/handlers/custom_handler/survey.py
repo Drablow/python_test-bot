@@ -1,12 +1,11 @@
 import logging
 from aiogram.types import Message
 from tg_API.keyboards.reply.contact import request_contact
+from tg_API.keyboards.inline.choice_buttons import get_yes_no_keyboard
 from tg_API.states.contact_information import FSMSurvey
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram import types, Dispatcher
-import datetime
-from database.common.models import *
 from database.core import crud
 from database.common.models import db, History, User
 
@@ -14,10 +13,30 @@ db_write = crud.create()
 db_read = crud.retrieve()
 
 
-# Вход в опросник
+# Вход в опросник, проверяем есть ли запись в базе
 async def survey(message: types.Message):
-    await FSMSurvey.name.set()
-    await message.answer(f'Привет, {message.from_user.username} введи свое имя')
+    retrieved = db_read(db, User, User.tg_id)
+    tg_id = message.from_user.id
+
+
+
+    for element in retrieved:
+        if tg_id != element.tg_id:
+            await FSMSurvey.name.set()
+            await message.answer(f'Привет {message.from_user.id}, введи свое имя')
+
+        else:
+            await message.answer('Ваша анкета заполнена, хотите обновить?', reply_markup=get_yes_no_keyboard())
+
+
+async def survey_start(callback: types.CallbackQuery, state: FSMContext) -> None:
+    if callback.data == 'cancel':
+        await state.finish()
+        await callback.answer('Отмена.')
+        await callback.message.delete()
+    else:
+        await FSMSurvey.name.set()
+        await callback.message.answer('Введите свое имя')
 
 
 # Выход из состояний
@@ -28,7 +47,7 @@ async def cancel_handler(message: types.Message, state: FSMContext):
     logging.info('Cancelling state %r', current_state)
 
     await state.finish()
-    await message.reply('Отмена.', reply_markup=types.ReplyKeyboardRemove())
+    await message.answer('Запись была отменена.', reply_markup=types.ReplyKeyboardRemove())
 
 
 # Получаем имя и регистрируем следующее состояние
@@ -103,6 +122,7 @@ async def get_contact(message: types.Message, state: FSMContext) -> Message:
 # Регистрируем хендлеры
 def register_handlers_survey(dp: Dispatcher):
     dp.register_message_handler(survey, commands=['survey', 'опрос'])
+    dp.register_callback_query_handler(survey_start, Text(equals=['accept', 'cancel'], ignore_case=True))
     dp.register_message_handler(cancel_handler, state="*", commands='cancel')
     dp.register_message_handler(cancel_handler, Text(equals='отмена', ignore_case=True), state="*")
     dp.register_message_handler(get_name, state=FSMSurvey.name)
