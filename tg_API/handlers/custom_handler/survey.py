@@ -3,7 +3,7 @@ from peewee import *
 
 from aiogram.types import Message
 from tg_API.keyboards.reply.contact import request_contact
-from tg_API.keyboards.inline.choice_buttons import get_yes_no_keyboard
+from tg_API.keyboards.inline.choice_buttons import get_yes_no_survey
 from tg_API.states.contact_information import FSMSurvey
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
@@ -21,14 +21,15 @@ async def survey(message: types.Message):
 
     query = User.select().where(User.tg_id == message.from_user.id)
     if query.exists():
-        await message.answer('Ваша анкета заполнена, хотите обновить?', reply_markup=get_yes_no_keyboard())
+        await message.answer('Ваша анкета заполнена, хотите обновить?', reply_markup=get_yes_no_survey())
 
     else:
         await FSMSurvey.name.set()
         await message.answer(f'Привет введи свое имя')
 
 
-async def survey_start(callback: types.CallbackQuery, state: FSMContext) -> None:
+# Блок yes_no
+async def survey_choice(callback: types.CallbackQuery, state: FSMContext) -> None:
     if callback.data == 'cancel':
         await state.finish()
         await callback.answer('Отмена.')
@@ -125,7 +126,7 @@ async def get_contact(message: types.Message, state: FSMContext) -> Message:
 # Регистрируем хендлеры
 def register_handlers_survey(dp: Dispatcher):
     dp.register_message_handler(survey, commands=['survey', 'опрос'])
-    dp.register_callback_query_handler(survey_start, Text(equals=['accept', 'cancel'], ignore_case=True))
+    dp.register_callback_query_handler(survey_choice, Text(equals='survey_choice', ignore_case=True))
     dp.register_message_handler(cancel_handler, state="*", commands='cancel')
     dp.register_message_handler(cancel_handler, Text(equals='отмена', ignore_case=True), state="*")
     dp.register_message_handler(get_name, state=FSMSurvey.name)

@@ -4,8 +4,8 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 # Инлайн кнопки для выбора языка
 def get_lang_keyboard() -> InlineKeyboardMarkup:
     buttons = [
-        InlineKeyboardButton(text='RU', callback_data='lang'),
-        InlineKeyboardButton(text='ENG', callback_data='lang')
+        InlineKeyboardButton(text='RU', callback_data='RU'),
+        InlineKeyboardButton(text='ENG', callback_data='ENG')
     ]
 
     keyboard = InlineKeyboardMarkup(row_width=2)
@@ -16,9 +16,9 @@ def get_lang_keyboard() -> InlineKeyboardMarkup:
 # Инлайн кнопки для выбора валюты
 def get_cur_keyboard() -> InlineKeyboardMarkup:
     buttons = [
-        InlineKeyboardButton(text='RUB', callback_data='cur'),
-        InlineKeyboardButton(text='USD', callback_data='cur'),
-        InlineKeyboardButton(text='EUR', callback_data='cur')
+        InlineKeyboardButton(text='RUB', callback_data='RUB'),
+        InlineKeyboardButton(text='USD', callback_data='USD'),
+        InlineKeyboardButton(text='EUR', callback_data='EUR')
     ]
 
     keyboard = InlineKeyboardMarkup(row_width=3)
@@ -26,10 +26,21 @@ def get_cur_keyboard() -> InlineKeyboardMarkup:
     return keyboard
 
 
-def get_yes_no_keyboard() -> InlineKeyboardMarkup:
+def get_yes_no_survey() -> InlineKeyboardMarkup:
     buttons = [
-        InlineKeyboardButton(text='Да', callback_data='accept'),
-        InlineKeyboardButton(text='Нет', callback_data='cancel')
+        InlineKeyboardButton(text='Да', callback_data='survey_choice'),
+        InlineKeyboardButton(text='Нет', callback_data='survey_choice')
+    ]
+
+    keyboard = InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    return keyboard
+
+
+def get_yes_no_setting() -> InlineKeyboardMarkup:
+    buttons = [
+        InlineKeyboardButton(text='Да', callback_data='setting_choice'),
+        InlineKeyboardButton(text='Нет', callback_data='setting_choice')
     ]
 
     keyboard = InlineKeyboardMarkup(row_width=2)
