@@ -5,28 +5,28 @@ from aiogram.dispatcher.filters import Text
 from aiogram import types, Dispatcher
 from tg_API.keyboards.inline import choice_buttons
 from database.core import crud
-from database.common.models import db, History, User
+from database.common.models import db, User, Setting
 from tg_API.keyboards.inline.choice_buttons import get_yes_no_setting
 
-db_write = crud.create()
-db_read = crud.retrieve()
+db_write = crud.write()
 db_update = crud.update()
+db_check_id = crud.check_id()
 
 
 # Точка входа в настройки
 async def setting(message: types.Message) -> None:
-    tg_id = message.from_user.id
-    query = User.select().where(User.tg_id == tg_id and User.lang == None)
-    if query.exists():
+    # if db_check_setting(db, User, message.from_user.id).exists():
+    if db_check_id(db, Setting, message.from_user.id).exists():
+        await message.answer('Хотите изменить настройки языка и валюты?', reply_markup=get_yes_no_setting())
+
+    else:
         await FSMSetting.lang.set()
         await message.answer('Выберите язык:', reply_markup=choice_buttons.get_lang_keyboard())
-    else:
-        await message.answer('Хотите изменить настройки языка и валюты?', reply_markup=get_yes_no_setting())
 
 
 # Блок yes_no
 async def setting_choice(callback: types.CallbackQuery, state: FSMContext) -> None:
-    if callback.data == 'cancel':
+    if callback.data == 'setting_choice_no':
         await state.finish()
         await callback.answer('Отмена.')
         await callback.message.delete()
@@ -50,6 +50,7 @@ async def cancel_handler(message: types.Message, state: FSMContext) -> None:
 # Выбор языка
 async def lang(callback: types.CallbackQuery, state: FSMContext) -> None:
     async with state.proxy() as data:
+        data['tg_id'] = callback.from_user.id
         data['lang'] = callback.data
 
     await FSMSetting.cur.set()
@@ -65,17 +66,21 @@ async def cur(callback: types.CallbackQuery, state: FSMContext) -> None:
     await callback.answer('Настройки валюты применены')
     await callback.message.delete()
 
-    User.update(
-        {User.lang: data['lang'],
-         User.cur: data['cur']}).where(User.tg_id == callback.from_user.id).execute()
+    if db_check_id(db, Setting, callback.from_user.id).exists():
+        db_update(db, Setting, dict(data))
 
+    else:
+        db_write(db, Setting, dict(data))
     await state.finish()
 
 
 def register_handler_setting(dp: Dispatcher):
     dp.register_message_handler(setting, commands=['setting'])
-    dp.register_callback_query_handler(setting_choice, Text(equals='setting_choice', ignore_case=True))
+    dp.register_callback_query_handler(
+        setting_choice, Text(equals=['setting_choice_yes', 'setting_choice_no'], ignore_case=True))
+
     dp.register_message_handler(cancel_handler, state="*", commands='cancel')
     dp.register_message_handler(cancel_handler, Text(equals='отмена', ignore_case=True), state="*")
+
     dp.register_callback_query_handler(lang, Text(equals=['RU', 'ENG'], ignore_case=True), state=FSMSetting.lang)
     dp.register_callback_query_handler(cur, Text(equals=['RUB', 'USD', 'EUR'], ignore_case=True), state=FSMSetting.cur)

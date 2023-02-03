@@ -28,8 +28,8 @@ def get_cur_keyboard() -> InlineKeyboardMarkup:
 
 def get_yes_no_survey() -> InlineKeyboardMarkup:
     buttons = [
-        InlineKeyboardButton(text='Да', callback_data='survey_choice'),
-        InlineKeyboardButton(text='Нет', callback_data='survey_choice')
+        InlineKeyboardButton(text='Да', callback_data='survey_choice_yes'),
+        InlineKeyboardButton(text='Нет', callback_data='survey_choice_no')
     ]
 
     keyboard = InlineKeyboardMarkup(row_width=2)
@@ -39,8 +39,8 @@ def get_yes_no_survey() -> InlineKeyboardMarkup:
 
 def get_yes_no_setting() -> InlineKeyboardMarkup:
     buttons = [
-        InlineKeyboardButton(text='Да', callback_data='setting_choice'),
-        InlineKeyboardButton(text='Нет', callback_data='setting_choice')
+        InlineKeyboardButton(text='Да', callback_data='setting_choice_yes'),
+        InlineKeyboardButton(text='Нет', callback_data='setting_choice_no')
     ]
 
     keyboard = InlineKeyboardMarkup(row_width=2)
