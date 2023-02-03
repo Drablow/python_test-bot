@@ -1,4 +1,6 @@
 import logging
+from peewee import *
+
 from aiogram.types import Message
 from tg_API.keyboards.reply.contact import request_contact
 from tg_API.keyboards.inline.choice_buttons import get_yes_no_keyboard
@@ -11,22 +13,19 @@ from database.common.models import db, History, User
 
 db_write = crud.create()
 db_read = crud.retrieve()
+db_update = crud.update()
 
 
 # Вход в опросник, проверяем есть ли запись в базе
 async def survey(message: types.Message):
-    retrieved = db_read(db, User, User.tg_id)
-    tg_id = message.from_user.id
 
+    query = User.select().where(User.tg_id == message.from_user.id)
+    if query.exists():
+        await message.answer('Ваша анкета заполнена, хотите обновить?', reply_markup=get_yes_no_keyboard())
 
-
-    for element in retrieved:
-        if tg_id != element.tg_id:
-            await FSMSurvey.name.set()
-            await message.answer(f'Привет {message.from_user.id}, введи свое имя')
-
-        else:
-            await message.answer('Ваша анкета заполнена, хотите обновить?', reply_markup=get_yes_no_keyboard())
+    else:
+        await FSMSurvey.name.set()
+        await message.answer(f'Привет введи свое имя')
 
 
 async def survey_start(callback: types.CallbackQuery, state: FSMContext) -> None:
@@ -109,7 +108,11 @@ async def get_contact(message: types.Message, state: FSMContext) -> Message:
             city=f'<b>Город:</b> <u>{data.get("city")}</u>',
             number=f'<b>Номер телефона:</b> <u> {data.get("phone_number")}</u>')
 
-        db_write(db, User, dict(data))
+        query = User.select().where(User.tg_id == message.from_user.id)
+        if query.exists():
+            db_update(db, User, dict(data))
+        else:
+            db_write(db, User, dict(data))
 
         await message.answer(text, reply_markup=types.ReplyKeyboardRemove())
     else:

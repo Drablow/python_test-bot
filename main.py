@@ -18,29 +18,10 @@ from loader import dp
 from tg_API.handlers.custom_handler import survey, setting
 from tg_API.handlers.default_heandlers import start, help, echo
 
-import datetime
-from database.common.models import *
-from database.core import crud
-from database.common.models import db, History, User
 
 # Включаем логирование, чтобы не пропустить важные сообщения
 logging.basicConfig(level=logging.INFO)
 
-
-# db_write = crud.create()
-# db_read = crud.retrieve()
-#
-# data = {}
-# data['tg_id'] = '1'
-# # data['name'] = 'Валера'
-# # data['age'] = 28
-# # data['country'] = 'Россия'
-# # data['city'] = 'Самара'
-# # data['phone_number'] = '+79279039662'
-# # data['lang'] = 'RU'
-# # data['cur'] = 'RUB'
-#
-# db_write(db, User, data)
 
 async def on_startup(dispatcher):
     print('Bot online')

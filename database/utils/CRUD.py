@@ -22,6 +22,13 @@ def _retrieve_all_data(db: db, model: T, *columns: BaseModel) -> ModelSelect:
     return response
 
 
+def _update_all_data(db: db, model: T, *colums: BaseModel) -> ModelSelect:
+    with db.atomic():
+        response = model.update(*colums)
+
+    return response
+
+
 class CRUDInterface():
     @staticmethod
     def create():
@@ -30,6 +37,10 @@ class CRUDInterface():
     @staticmethod
     def retrieve():
         return _retrieve_all_data
+
+    @staticmethod
+    def update():
+        return _update_all_data
 
 
 if __name__ == '__main__':
