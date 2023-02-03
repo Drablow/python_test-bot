@@ -1,6 +1,4 @@
 import logging
-from peewee import *
-
 from aiogram.types import Message
 from tg_API.keyboards.reply.contact import request_contact
 from tg_API.keyboards.inline.choice_buttons import get_yes_no_survey

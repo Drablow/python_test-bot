@@ -1,5 +1,5 @@
 from typing import Dict
-from telebot.types import Message
+from aiogram import types
 
 
 import requests
@@ -21,7 +21,7 @@ def _make_response(method: str, url: str, headers: Dict, params: Dict, timeout: 
     return status_code
 
 
-def _location_search(message: Message, url_dict: Dict, headers: Dict, lang: str, func=_make_response) -> Dict[str, str]:
+def _location_search(message: types.Message, url_dict: Dict, headers: Dict, lang: str, func=_make_response) -> Dict[str, str]:
     """
     Выполнение HTTP-запроса к Hotels API (rapidapi.com) (Поиск локаций (городов)).
     :param message: сообщение пользователя

@@ -46,3 +46,14 @@ def get_yes_no_setting() -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
     return keyboard
+
+
+# def get_yes_no_request() -> InlineKeyboardMarkup:
+#     buttons = [
+#         InlineKeyboardButton(text='Да', callback_data='request_choice_yes'),
+#         InlineKeyboardButton(text='Нет', callback_data='request_choice_no')
+#     ]
+#
+#     keyboard = InlineKeyboardMarkup(row_width=2)
+#     keyboard.add(*buttons)
+#     return keyboard

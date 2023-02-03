@@ -1,9 +1,10 @@
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
 
-# class FSMRequests(StatesGroup):
-#     name = State()
-#     age = State()
-#     country = State()
-#     city = State()
-#     phone_number = State()
+class FSMRequests(StatesGroup):
+    # lang_cur = State()
+    search_city = State()
+    city_handler = State()
+    check_in_out = State()
+    count_people = State()
+    photo = State()

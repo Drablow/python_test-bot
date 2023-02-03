@@ -8,4 +8,4 @@ load_dotenv()
 
 class SiteSettings(BaseSettings):
     api_key: SecretStr = os.getenv("RAPID_API_KEY", None)
-    host_api: StrictStr = os.getenv("RAPID_API_Host", None)
+    host_api: StrictStr = os.getenv("RAPID_API_HOST", None)

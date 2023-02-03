@@ -14,7 +14,7 @@
 import logging
 from aiogram.utils import executor
 from loader import dp
-
+from tg_API.handlers.basic_handlers import requests
 from tg_API.handlers.custom_handler import survey, setting
 from tg_API.handlers.default_heandlers import start, help, echo
 
@@ -28,7 +28,7 @@ async def on_startup(dispatcher):
 
 
 if __name__ == '__main__':
-
+    requests.register_handlers_requests(dp)
     survey.register_handlers_survey(dp)
     setting.register_handler_setting(dp)
     start.register_handlers_start(dp)

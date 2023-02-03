@@ -37,6 +37,15 @@ def _db_check_tg_id(db: db, model: T, tg_id: str):
     return response
 
 
+def _db_check_setting(db: db, model: T, tg_id: str) -> tuple:
+    """Функция проверки на наличие записи id пользователя в базе"""
+    with db.atomic():
+        for person in model.select().where(model.tg_id == tg_id):
+            response = person.lang, person.cur
+
+    return response
+
+
 class CRUDInterface():
     @staticmethod
     def write():
@@ -53,6 +62,10 @@ class CRUDInterface():
     @staticmethod
     def check_id():
         return _db_check_tg_id
+
+    @staticmethod
+    def check_setting():
+        return _db_check_setting
 
 
 if __name__ == '__main__':
