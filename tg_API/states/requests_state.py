@@ -7,4 +7,5 @@ class FSMRequests(StatesGroup):
     city_handler = State()
     check_in_out = State()
     count_people = State()
+    set_price = State()
     photo = State()

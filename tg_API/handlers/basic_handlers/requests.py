@@ -82,6 +82,28 @@ async def check_in_out(message: types.Message, state: FSMContext):
     await message.answer('Введите дату выезда в формате День-Месяц-Год')
     async with state.proxy() as data:
         data['checkOutDate'] = message.text
+    await FSMRequests.next()
+    await message.answer('Сколько взрослых?')
+
+
+async def count_people(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['adults'] = message.text
+
+    await message.answer('Сколько детей?')
+    async with state.proxy() as data:
+        data['children'] = message.text
+    await FSMRequests.next()
+    await message.answer('Введите сумму от')
+
+
+async def set_price(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['min'] = message.text
+    await message.answer('Введите сумму до')
+
+    async with state.proxy() as data:
+        data['max'] = message.text
 
 
 def register_handlers_requests(dp: Dispatcher):
@@ -92,3 +114,5 @@ def register_handlers_requests(dp: Dispatcher):
     dp.register_message_handler(search_city, state=FSMRequests.search_city)
     dp.register_callback_query_handler(city_handler, state=FSMRequests.city_handler)
     dp.register_message_handler(check_in_out, state=FSMRequests.check_in_out)
+    dp.register_message_handler(count_people, state=FSMRequests.count_people)
+    dp.register_message_handler(set_price, state=FSMRequests.set_price)
