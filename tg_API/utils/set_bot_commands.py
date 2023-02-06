@@ -1,4 +1,5 @@
 from telebot.types import BotCommand
+
 from tg_API.config_data.config import DEFAULT_COMMANDS
 
 

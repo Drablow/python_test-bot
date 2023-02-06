@@ -1,16 +1,28 @@
 from aiogram import types, Dispatcher
-from loader import dp, bot
+
+from database.common.models import db, Setting
+from database.core import crud
+from tg_API.keyboards.inline.choice_buttons import get_lang_keyboard
+from tg_API.states.set_lang_cur import FSMSetting
+
+db_check_id = crud.check_id()
+db_write = crud.write()
 
 
 async def start_bot(message: types.Message):
-    await message.reply(f"Привет, {message.from_user.full_name}!")
-    await bot.send_message(message.from_user.id, text='Я помогу вам в выборе отеля (выбери команду): '
-                                                      '\n\n /lowprice - Узнать топ самых дешёвых отелей в городе'
-                                                      '\n\n /highprice - Узнать топ самых дорогих отелей в городе'
-                                                      '\n\n /bestdeal - Узнать топ отелей, наиболее подходящих по цене '
-                                                      'и расположению от центра (самые дешёвые и находятся ближе всего к центру)'
-                                                      '\n\n /history - Узнать историю поиска отелей'
-                                                      '\n\n /setting (по желанию) - Установить параметры поиска (язык, валюта)')
+    if db_check_id(db, Setting, message.from_user.id).exists():
+        await message.answer('Состояние сброшено.')
+        await message.answer('Регистрация уже пройдена.')
+    else:
+        locale = message.from_user.locale.language
+        if locale == 'ru':
+            await message.answer('Пожалуйста, Выберете ваш язык\n🇺🇸/🇬🇧English\n🇷🇺Русский',
+                                 reply_markup=get_lang_keyboard())
+
+        else:
+            await message.answer('Please, choose your language\n🇺🇸/🇬🇧English\n🇷🇺Русский',
+                                 reply_markup=get_lang_keyboard())
+        await FSMSetting.lang.set()
 
 
 def register_handlers_start(dp: Dispatcher):

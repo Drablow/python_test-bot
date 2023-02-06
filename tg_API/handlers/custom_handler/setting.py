@@ -1,12 +1,14 @@
 import logging
-from tg_API.states.set_lang_cur import FSMSetting
+
+from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
-from aiogram import types, Dispatcher
-from tg_API.keyboards.inline import choice_buttons
+
+from database.common.models import db, Setting
 from database.core import crud
-from database.common.models import db, User, Setting
+from tg_API.keyboards.inline import choice_buttons
 from tg_API.keyboards.inline.choice_buttons import get_yes_no_setting
+from tg_API.states.set_lang_cur import FSMSetting
 
 db_write = crud.write()
 db_update = crud.update()
@@ -75,7 +77,7 @@ async def cur(callback: types.CallbackQuery, state: FSMContext) -> None:
 
 
 def register_handler_setting(dp: Dispatcher):
-    dp.register_message_handler(setting, commands=['setting'])
+    dp.register_message_handler(setting, Text(equals=['⚙️ settings', '⚙️ настройки'], ignore_case=True))
     dp.register_callback_query_handler(
         setting_choice, Text(equals=['setting_choice_yes', 'setting_choice_no'], ignore_case=True))
 

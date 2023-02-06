@@ -2,23 +2,16 @@ import re
 
 from aiogram.dispatcher import FSMContext
 
-from loader import bot, dp
 from site_API.core import site_api, url_dict, lang, headers
 import logging
 from aiogram.types import Message
 from aiogram.dispatcher.filters import Text
 from aiogram import types, Dispatcher
 from database.core import crud
-from database.common.models import db, History, User, Setting
 from tg_API.states.requests_state import FSMRequests
 from tg_API.states.set_lang_cur import FSMSetting
 from tg_API.keyboards.inline.choice_buttons import get_yes_no_setting
 
-# lang_cur = State()
-# search_city = State()
-# check_in_out = State()
-# count_people = State()
-# photo = State()
 
 
 db_write = crud.write()
@@ -45,7 +38,6 @@ async def requests(message: types.Message):
 
 async def search_city(message: types.Message, state: FSMContext) -> None:
     """Обработка запроса пользователя по поиску города, вывод Inline клавиатуры с результатами"""
-
 
     temp = await message.answer('Загружаю информацию...')
     city_list = site_api.get_location()
