@@ -7,7 +7,7 @@ from aiogram.types import Message
 
 from database.common.models import db, User
 from database.core import crud
-from tg_API.keyboards.inline.choice_buttons import get_yes_no_survey
+from tg_API.keyboards.inline.choice_buttons import get_yes_no
 from tg_API.keyboards.reply.contact import request_contact
 from tg_API.states.contact_information import FSMSurvey
 
@@ -19,7 +19,7 @@ db_check_id = crud.check_id()
 # Вход в опросник, проверяем есть ли запись в базе
 async def survey(message: types.Message):
     if db_check_id(db, User, message.from_user.id).exists():
-        await message.answer('Ваша анкета заполнена, хотите обновить?', reply_markup=get_yes_no_survey())
+        await message.answer('Ваша анкета заполнена, хотите обновить?', reply_markup=get_yes_no())
 
     else:
         await FSMSurvey.name.set()

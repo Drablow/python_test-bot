@@ -7,7 +7,7 @@ from aiogram.dispatcher.filters import Text
 from database.common.models import db, Setting
 from database.core import crud
 from tg_API.keyboards.inline import choice_buttons
-from tg_API.keyboards.inline.choice_buttons import get_yes_no_setting
+from tg_API.keyboards.inline.choice_buttons import get_yes_no
 from tg_API.states.set_lang_cur import FSMSetting
 
 db_write = crud.write()
@@ -19,7 +19,7 @@ db_check_id = crud.check_id()
 async def setting(message: types.Message) -> None:
     # if db_check_setting(db, User, message.from_user.id).exists():
     if db_check_id(db, Setting, message.from_user.id).exists():
-        await message.answer('Хотите изменить настройки языка и валюты?', reply_markup=get_yes_no_setting())
+        await message.answer('Хотите изменить настройки языка и валюты?', reply_markup=get_yes_no())
 
     else:
         await FSMSetting.lang.set()

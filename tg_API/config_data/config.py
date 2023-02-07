@@ -74,7 +74,7 @@ def load_config(path: str = None):
         ),
         site_api=SiteAPI(
             key=env.str('RAPID_API_KEY'),
-            host=env.str('RAPID_API_Host')
+            host=env.str('RAPID_API_HOST')
         ),
         misc=Miscellaneous()
     )

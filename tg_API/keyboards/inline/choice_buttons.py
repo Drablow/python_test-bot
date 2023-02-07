@@ -1,7 +1,17 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
+def menu_search_hotel() -> InlineKeyboardMarkup:
+    buttons = [
+        InlineKeyboardButton(text='Бюджетные', callback_data='lowprice'),
+        InlineKeyboardButton(text='Бизнес класс', callback_data='highprice'),
+        InlineKeyboardButton(text='Оптимальный выбор', callback_data='bestdeal'),
+        InlineKeyboardButton(text='Отмена', callback_data='cancel')
+    ]
 
+    keyboard = InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    return keyboard
 
 
 
@@ -30,7 +40,7 @@ def get_cur_keyboard() -> InlineKeyboardMarkup:
     return keyboard
 
 
-def get_yes_no_survey() -> InlineKeyboardMarkup:
+def get_yes_no() -> InlineKeyboardMarkup:
     buttons = [
         InlineKeyboardButton(text='Да', callback_data='survey_choice_yes'),
         InlineKeyboardButton(text='Нет', callback_data='survey_choice_no')
@@ -41,23 +51,3 @@ def get_yes_no_survey() -> InlineKeyboardMarkup:
     return keyboard
 
 
-def get_yes_no_setting() -> InlineKeyboardMarkup:
-    buttons = [
-        InlineKeyboardButton(text='Да', callback_data='setting_choice_yes'),
-        InlineKeyboardButton(text='Нет', callback_data='setting_choice_no')
-    ]
-
-    keyboard = InlineKeyboardMarkup(row_width=2)
-    keyboard.add(*buttons)
-    return keyboard
-
-
-# def get_yes_no_request() -> InlineKeyboardMarkup:
-#     buttons = [
-#         InlineKeyboardButton(text='Да', callback_data='request_choice_yes'),
-#         InlineKeyboardButton(text='Нет', callback_data='request_choice_no')
-#     ]
-#
-#     keyboard = InlineKeyboardMarkup(row_width=2)
-#     keyboard.add(*buttons)
-#     return keyboard
