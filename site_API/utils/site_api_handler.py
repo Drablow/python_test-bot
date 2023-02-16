@@ -1,10 +1,9 @@
-from typing import Dict
-from aiogram import types
-
-
-import requests
 import json
 import re
+from typing import Dict
+
+import requests
+from aiogram import types
 
 
 def _make_response(method: str, url: str, headers: Dict, params: Dict, timeout: int, success=200):
@@ -21,7 +20,8 @@ def _make_response(method: str, url: str, headers: Dict, params: Dict, timeout: 
     return status_code
 
 
-def _location_search(message: types.Message, url_dict: Dict, headers: Dict, lang: str, func=_make_response) -> Dict[str, str]:
+def _location_search(message: types.Message, url_dict: Dict, headers: Dict, lang: str, func=_make_response) -> Dict[
+    str, str]:
     """
     Выполнение HTTP-запроса к Hotels API (rapidapi.com) (Поиск локаций (городов)).
     :param message: сообщение пользователя
@@ -37,38 +37,82 @@ def _location_search(message: types.Message, url_dict: Dict, headers: Dict, lang
     return city_dict
 
 
-# def _hotel_search():
-#
-#     url = "https://hotels4.p.rapidapi.com/properties/v2/list"
-#
-#     payload = {'currency': 'USD',
-#                'eapid': 1,
-#                'locale': 'ru_RU',
-#                'siteId': 300000001,
-#                'destination': {
-#                    'regionId': '3000'  # id из первого запроса
-#                },
-#                'checkInDate': {'day': 31, 'month': 1, 'year': 2023},
-#                'checkOutDate': {'day': 9, 'month': 2, 'year': 2023},
-#                'rooms': [{'adults': 1}],
-#                'resultsStartingIndex': 0,
-#                'resultsSize': 10,
-#                'sort': 'PRICE_LOW_TO_HIGH',
-#                'filters': {'availableFilter': 'SHOW_AVAILABLE_ONLY'}
-#                }
-#     headers = {
-#         "content-type": "application/json",
-#         "X-RapidAPI-Key": "56a3f34904msh1777fc4fdb5417dp1937d9jsnbcae13bb743d",
-#         "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
-#     }
-#
-#     response = requests.request("POST", url, json=payload, headers=headers)
-#     data = json.loads(response.text)
-#
-#     d = data['data']['propertySearch']['properties']
-#     print(f'Найдено {len(d)} отелей')
-#     for i in range(len(d)):
-#         print(d[i]['name'])
+def _hotel_search(data: Dict):
+    url = "https://hotels4.p.rapidapi.com/properties/v2/list"
+
+    payload = {'currency': 'USD',
+               'eapid': 1,
+               'locale': 'ru_RU',
+               'siteId': 300000001,
+               'destination': {
+                   'regionId': data.get('regionId')  # id из первого запроса
+               },
+               'checkInDate': {
+                   'day': data.get('checkInDay'),
+                   'month': data.get('checkInMonth'),
+                   'year': data.get('checkInYear')
+               },
+               'checkOutDate': {
+                   'day': data.get('checkOutDay'),
+                   'month': data.get('checkOutMonth'),
+                   'year': data.get('checkOutYear')
+               },
+               'rooms': [{'adults': data.get('adults')}],
+               'resultsStartingIndex': 0,
+               'resultsSize': 10,
+               'sort': 'PRICE_LOW_TO_HIGH',
+               "filters": {
+                   "price": {
+                       "max": data.get('max'),
+                       "min": data.get('min')
+                   }
+               }
+               }
+
+    # payload = {
+    #     "currency": "USD",
+    #     "eapid": 1,
+    #     "locale": "en_US",
+    #     "siteId": 300000001,
+    #     "destination": {"regionId": "3000"},
+    #     "checkInDate": {
+    #         "day": 10,
+    #         "month": 10,
+    #         "year": 2022
+    #     },
+    #     "checkOutDate": {
+    #         "day": 15,
+    #         "month": 10,
+    #         "year": 2022
+    #     },
+    #     "rooms": [{"adults": 2}],
+    #     "resultsStartingIndex": 0,
+    #     "resultsSize": 200,
+    #     "sort": "PRICE_LOW_TO_HIGH",
+    #     "filters": {"price": {
+    #         "max": 150,
+    #         "min": 100
+    #     }}
+    # }
+
+    headers = {
+        "content-type": "application/json",
+        "X-RapidAPI-Key": "56a3f34904msh1777fc4fdb5417dp1937d9jsnbcae13bb743d",
+        "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
+    }
+
+    response = requests.request("POST", url, json=payload, headers=headers)
+
+    data = json.loads(response.text)
+    hotels_list = data['data']['propertySearch']['properties']
+
+    if not hotels_list:
+        return None, None
+
+
+    print(f'Найдено {len(hotels_list)} отелей')
+    for i in range(len(hotels_list)):
+        print(hotels_list[i]['name'])
 
 
 class SiteApiInterface():
@@ -77,9 +121,14 @@ class SiteApiInterface():
     def get_location():
         return _location_search
 
+    @staticmethod
+    def get_hotel():
+        return _hotel_search
+
 
 if __name__ == "__main__":
     _make_response()
     _location_search()
+    _hotel_search()
 
     SiteApiInterface()
