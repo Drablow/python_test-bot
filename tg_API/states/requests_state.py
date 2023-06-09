@@ -7,8 +7,10 @@ class FSMRequests(StatesGroup):
     city_handler = State()
     check_in = State()
     check_out = State()
+    count_hotels = State()
     count_parents = State()
     count_children = State()
     set_price_min = State()
     set_price_max = State()
+    hotel_page_handler = State()
 

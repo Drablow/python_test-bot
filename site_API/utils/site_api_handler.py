@@ -59,7 +59,7 @@ def _hotel_search(data: Dict):
                },
                'rooms': [{'adults': data.get('adults')}],
                'resultsStartingIndex': 0,
-               'resultsSize': 10,
+               'resultsSize': data.get('resultsSize'),
                'sort': 'PRICE_LOW_TO_HIGH',
                "filters": {
                    "price": {
@@ -69,31 +69,7 @@ def _hotel_search(data: Dict):
                }
                }
 
-    # payload = {
-    #     "currency": "USD",
-    #     "eapid": 1,
-    #     "locale": "en_US",
-    #     "siteId": 300000001,
-    #     "destination": {"regionId": "3000"},
-    #     "checkInDate": {
-    #         "day": 10,
-    #         "month": 10,
-    #         "year": 2022
-    #     },
-    #     "checkOutDate": {
-    #         "day": 15,
-    #         "month": 10,
-    #         "year": 2022
-    #     },
-    #     "rooms": [{"adults": 2}],
-    #     "resultsStartingIndex": 0,
-    #     "resultsSize": 200,
-    #     "sort": "PRICE_LOW_TO_HIGH",
-    #     "filters": {"price": {
-    #         "max": 150,
-    #         "min": 100
-    #     }}
-    # }
+
 
     headers = {
         "content-type": "application/json",
@@ -109,10 +85,17 @@ def _hotel_search(data: Dict):
     if not hotels_list:
         return None, None
 
+    hotels_dict = {hotel['name']: {'id': hotel.get('id', '-'), 'name': hotel.get('name', '-'),
+                                   'price': hotel['price']['lead'].get('formatted'),
+                                   'image': hotel['propertyImage']['image'].get('url')
+                                   }
+                   for hotel in hotels_list}
 
-    print(f'Найдено {len(hotels_list)} отелей')
-    for i in range(len(hotels_list)):
-        print(hotels_list[i]['name'])
+    # hotels_dict = {hotel['name']: {'id': hotel.get('id', '-'), 'name': hotel.get('name', '-'),
+    #                                'address': hotel.get('address', '-'), 'landmarks': hotel.get('landmarks', '-')}
+    #                for hotel in hotels_list}
+
+    return hotels_dict
 
 
 class SiteApiInterface():
